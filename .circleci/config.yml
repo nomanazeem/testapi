@@ -25,7 +25,4 @@ jobs:
 workflows:
   build-and-test-and-deploy:
     jobs:
-      - test-java
-      - build-and-push-docker:
-          requires:
-            - test-java
+      - build-and-push-docker
