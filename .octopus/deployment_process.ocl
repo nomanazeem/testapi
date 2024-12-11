@@ -8,7 +8,7 @@ step "run-a-script" {
         action_type = "Octopus.Script"
         properties = {
             Octopus.Action.RunOnServer = "false"
-            Octopus.Action.Script.ScriptBody = "sudo apt install nginx "
+            Octopus.Action.Script.ScriptBody = "sudo apt install nginx -y"
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "Bash"
         }
