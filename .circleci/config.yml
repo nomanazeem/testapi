@@ -4,8 +4,8 @@ jobs:
     docker:
       - image: cimg/base:2022.09
         auth:
-          username: ${{ secret.DOCKERHUB_USERNAME }}
-          password: ${{ secret.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
       - checkout
       - setup_remote_docker:
@@ -14,10 +14,10 @@ jobs:
           name: Build Docker image
           command: |
             TAG=0.1.$CIRCLE_BUILD_NUM
-            docker build -t ${{ secret.DOCKERHUB_USERNAME }}/testapi:$TAG .
+            docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/testapi:$TAG .
       - run:
           name: Push application Docker image
           command: |
             TAG=0.1.$CIRCLE_BUILD_NUM
-            echo ${{ secret.DOCKERHUB_TOKEN }} | docker login -u ${{ secret.DOCKERHUB_USERNAME }} --password-stdin
-            docker push ${{ secret.DOCKERHUB_USERNAME }}/testapi:$TAG
+            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/testapi:$TAG
