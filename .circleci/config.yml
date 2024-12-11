@@ -4,8 +4,8 @@ jobs:
     docker:
       - image: cimg/base:2022.09
         auth:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: syednomanazeem
+          password: dckr_pat_j3NTwXXGZeT0peLzcRk9yF7U8IA
     steps:
       - checkout
       - setup_remote_docker:
