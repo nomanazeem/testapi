@@ -1,6 +1,5 @@
-# This config was automatically generated from your source code
-# Stacks detected: cicd:github-actions:.github/workflows,deps:java:.,tool:gradle:
 version: 2.1
+
 jobs:
   test-java:
     docker:
@@ -24,22 +23,32 @@ jobs:
             - ~/.gradle/caches
       - store_artifacts:
           path: build/reports
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
+
+  build-and-push-docker:
     docker:
-      - image: cimg/base:stable
+      - image: docker:stable
     steps:
-      # Replace this with steps to deploy to users
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.8
       - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          name: Log in to Docker Hub
+          command: |-
+            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - run:
-          name: found github actions config
-          command: ':'
+          name: Build Docker Image
+          command: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${CIRCLE_SHA1} .
+      - run:
+          name: Push Docker Image
+          command: |-
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${CIRCLE_SHA1}
+            docker tag ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${CIRCLE_SHA1} ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
+
 workflows:
-  build-and-test:
+  build-and-test-and-deploy:
     jobs:
       - test-java
-    # - deploy:
-    #     requires:
-    #       - test-java
+      - build-and-push-docker:
+          requires:
+            - test-java
